@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Harita</title>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; }
+        #map { height: 100vh; width: 100vw; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = L.map('map').setView([40.76520, 29.96190], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var stops = [];
+    var startMarker = null;
+    var endMarker = null;
+    var drawnLines = [];
+
+    function addStopsToMap(stopsJson) {
+        stops = JSON.parse(stopsJson);
+        stops.forEach(function(stop) {
+            var popupContent = "<b>" + stop.name + "</b><br><i>Tip: " + stop.type + "</i><br>";
+
+            if (stop.nextStops && stop.nextStops.length > 0) {
+                popupContent += "<br><b>Sonraki Duraklar:</b><ul>";
+                stop.nextStops.forEach(function(nextStop) {
+                    popupContent += "<li>" + nextStop.stopId + " (Mesafe: " + nextStop.mesafe + " km, Süre: " + nextStop.sure + " dk)</li>";
+                });
+                popupContent += "</ul>";
+            }
+
+            if (stop.transfer) {
+                popupContent += "<br><b>Aktarma:</b> " + stop.transfer.transferStopId + "<br>" + 
+                                "Süre: " + stop.transfer.transferSure + " dk, Ücret: " + stop.transfer.transferUcret + " TL";
+            }
+
+            L.marker([stop.lat, stop.lon]).addTo(map)
+                .bindPopup(popupContent)
+                .on('click', function() { console.log("Tıklandı: " + stop.name); });
+        });
+    }
+
+    function selectStartPoint() {
+        map.once('click', function(e) {
+            if (startMarker) map.removeLayer(startMarker);
+            startMarker = L.circleMarker(e.latlng, {
+                radius: 8, color: 'red', fillColor: '#f03', fillOpacity: 0.9
+            }).addTo(map).bindPopup("Seçilen Başlangıç Konumu").openPopup();
+
+            const nearestStop = findNearestStop(e.latlng.lat, e.latlng.lng);
+            console.log("Başlangıç noktası seçildi: " + nearestStop.name);
+            if (typeof javaApp !== "undefined") javaApp.setStartLocation(e.latlng.lat, e.latlng.lng);
+        });
+    }
+
+    function selectEndPoint() {
+        map.once('click', function(e) {
+            if (endMarker) map.removeLayer(endMarker);
+            endMarker = L.circleMarker(e.latlng, {
+                radius: 8, color: 'blue', fillColor: '#30f', fillOpacity: 0.9
+            }).addTo(map).bindPopup("Seçilen Varış Konumu").openPopup();
+
+            const nearestStop = findNearestStop(e.latlng.lat, e.latlng.lng);
+            console.log("Varış noktası seçildi: " + nearestStop.name);
+            if (typeof javaApp !== "undefined") javaApp.setEndLocation(e.latlng.lat, e.latlng.lng);
+        });
+    }
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+        var R = 6371;
+        var dLat = (lat2 - lat1) * Math.PI / 180;
+        var dLon = (lon2 - lon1) * Math.PI / 180;
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function findNearestStop(lat, lon) {
+        let minDistance = Infinity;
+        let nearestStop = null;
+        stops.forEach(stop => {
+            let distance = getDistance(lat, lon, stop.lat, stop.lon);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestStop = stop;
+            }
+        });
+        return nearestStop;
+    }
+
+    function drawRouteLine(lat1, lon1, lat2, lon2, color) {
+        var style = {
+            color: color,
+            weight: 5,
+            opacity: 0.9
+        };
+
+        if (color === "blue") style.dashArray = "5, 10";
+        if (color === "yellow") style.dashArray = "10, 10";
+        if (color === "red") style.dashArray = "1, 6"; 
+
+        var line = L.polyline([[lat1, lon1], [lat2, lon2]], style).addTo(map);
+        drawnLines.push(line);
+    }
+
+    function clearAllLines() {
+        drawnLines.forEach(line => map.removeLayer(line));
+        drawnLines = [];
+    }
+
+    function logClickLocation(e) {
+        console.log("Haritada tıklanan konum: ", e.latlng.lat, e.latlng.lng);
+    }
+
+    map.on('click', logClickLocation);
+</script>
+</body>
+</html>

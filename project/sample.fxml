@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane fx:id="baslangic" prefHeight="950.0" prefWidth="1200.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moovit.Controller">
+   <children>
+      <!-- Sol Panel - Kullanıcı Bilgileri ve Kontroller -->
+      <VBox spacing="20" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="20.0" prefWidth="400.0">
+         <!-- Kullanıcı Bilgileri Kartı -->
+         <VBox fx:id="root" spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <Label styleClass="header-label" text="Kullanıcı Bilgileri" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </Label>
+            
+            <Label text="İsim-Soyisim" style="-fx-text-fill: #757575;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="name" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-padding: 8;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            
+            <Label text="Yaş" style="-fx-text-fill: #757575;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="age" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-padding: 8;" />
+            
+            <Label text="Meslek" style="-fx-text-fill: #757575;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="meslekId" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-padding: 8;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            
+            <ComboBox fx:id="paymentComboBox" maxWidth="Infinity" promptText="Ödeme Yöntemi" 
+                      style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-padding: 8;" />
+            
+            <Button fx:id="loginButton" mnemonicParsing="false" maxWidth="Infinity" prefHeight="40.0" text="Giriş Yap" 
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+         </VBox>
+
+         <!-- Rota Kontrolleri -->
+         <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <Label text="Rota Seçenekleri" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </Label>
+
+            <HBox spacing="10">
+               <Button fx:id="selectStartButton" mnemonicParsing="false" prefHeight="40.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                       text="Başlangıç Noktası" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Button>
+               <Button fx:id="selectEndButton" mnemonicParsing="false" prefHeight="40.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                       text="Varış Noktası" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Button>
+            </HBox>
+            
+            <HBox spacing="10">
+               <Button fx:id="findRouteButton" disable="true" mnemonicParsing="false" prefHeight="40.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                       text="Hesaplı Rota" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Button>
+               <Button fx:id="fastestRouteButton" disable="true" mnemonicParsing="false" prefHeight="40.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                       text="Hızlı Rota" style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Button>
+            </HBox>
+            
+            <TextArea fx:id="routeResultArea" editable="false" prefHeight="300.0" maxWidth="Infinity" wrapText="true"
+                      style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextArea>
+         </VBox>
+      </VBox>
+
+      <!-- Sağ Panel - Harita -->
+      <WebView fx:id="mapView" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="20.0" 
+               AnchorPane.leftAnchor="440.0" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0); -fx-background-radius: 10;" />
+   </children>
+</AnchorPane>
